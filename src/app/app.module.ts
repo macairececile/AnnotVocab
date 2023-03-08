@@ -24,6 +24,9 @@ import {MatSelectModule} from "@angular/material/select";
 import { SelectPictoComponent } from './components/select-picto/select-picto.component';
 import {AppRoutingModule} from "./app-routing.module";
 import { VersionComponent } from './components/version/version.component';
+import { PostEditionComponent } from './components/post_edition/post-edition.component';
+import { PostEditionHomeComponent } from './components/post_edition_home/post-edition-home.component';
+import { PostEditionExitComponent } from './components/post_edition_exit/post-edition-exit.component';
 import {AnnotVocabComponent} from './components/annot_vocab/annot_vocab.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
@@ -40,6 +43,9 @@ export function createTranslateLoader(http: HttpClient) {
     LayoutComponent,
     SelectPictoComponent,
     VersionComponent,
+    PostEditionComponent,
+    PostEditionHomeComponent,
+    PostEditionExitComponent,
     AnnotVocabComponent
   ],
   imports: [
