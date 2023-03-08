@@ -1,0 +1,32 @@
+.margin{
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.margin-right{
+  margin-right: 10px;
+}
+.colorPickerContainer {
+  height: 20px;
+  width: 100px;
+  background-color: dimgrey;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+.colorPicker {
+  cursor: pointer;
+  height: calc(100% - 4px);
+  width: calc(100% - 4px);
+  margin-left: 2px;
+  margin-top: 2px;
+  border-radius: 5px;
+  background-color: white;
+}
+.picto{
+  display: table-cell;
+}
+.labelPicto{
+  text-align: center;
+}
+.mat-row {
+  border-bottom-width: 10px;
+}

@@ -1,0 +1,10 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.5/dist/semantic.min.css">
+<header>
+<div class="ui secondary menu">
+  <div class="right menu">
+    <div class="ui item" (click)="switchLanguage()"
+         [ngStyle]="{'background-image':this.getIcon(this.language ==='FR'? 'france':'uk'), 'background-repeat': 'no-repeat'}">
+    </div>
+  </div>
+</div>
+</header>

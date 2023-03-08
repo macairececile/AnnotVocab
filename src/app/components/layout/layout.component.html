@@ -1,0 +1,99 @@
+<!-- *ngIf="this.editionService.isSearch" -->
+<div class="margin" *ngIf="this.editionService.isSearch">
+  <mat-expansion-panel #expansionPanel (click)="scrollToBottom(expansionPanel)">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h2> Police </h2>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <h3> Taille de police <input #policeSizeInput type="number" max="50" min="1" value="{{defaultPoliceSize}}" (change)="policeSize= policeSizeInput.value"></h3>
+    <h3> Type de police</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>type de police</mat-label>
+      <mat-select [(value)]="police">
+        <mat-option value="Arial">Arial</mat-option>
+        <mat-option value="Karumbi">Karumbi</mat-option>
+        <mat-option value="Chilanka">Chilanka</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <h3> Couleur de police </h3>
+    <input [(colorPicker)]="this.editionService.policeColor" [style.background]="this.editionService.policeColor" cpHeight="230px" cpPosition="top-right"/>
+    <br>
+    <br>
+    <h3> Transformation </h3>
+    <mat-radio-group>
+      <mat-radio-button #aucun (change)="transformation(aucun)" class="margin-right" value="aucun" [checked]="true">Aucun</mat-radio-button>
+      <mat-radio-button #minuscule (change)="transformation(minuscule)" class="margin-right" value="minuscule" [checked]="false">Minuscule</mat-radio-button>
+      <mat-radio-button #majuscule (change)="transformation(majuscule)" class="margin-right" value="majuscule" [checked]="false">Majuscule</mat-radio-button>
+      <mat-radio-button #capitale (change)="transformation(capitale)" value="capitale" [checked]="false">Capitale</mat-radio-button>
+    </mat-radio-group>
+  </mat-expansion-panel>
+  <mat-expansion-panel #expansionPanel2 (click)="scrollToBottom(expansionPanel2)">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h2> Bordure </h2>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <h3> Type de bordure </h3>
+    <mat-form-field appearance="fill">
+      <mat-label>type de bordure</mat-label>
+      <mat-select [(value)]="typeOfBorder" style="border-bottom-style: {{typeOfBorder}}">
+        <mat-option value="none">aucun</mat-option>
+        <mat-option value="solid"><div class="mat-row" style="border-top-style: solid;"></div></mat-option>
+        <mat-option value="dotted"><div style="border-top-style: dotted;"></div></mat-option>
+        <mat-option value="dashed"><div style="border-top-style: dashed;"></div></mat-option>
+        <mat-option value="double"><div style="border-top-style: double;"></div></mat-option>
+      </mat-select>
+    </mat-form-field>
+    <h3> Taille de bordure <input #borderSizeInput type="number" max="50" min="1" value="{{defaultBorderSize}}" (change)="borderSize= borderSizeInput.value"></h3>
+    <h3> Couleur de bordure </h3>
+    <input [(colorPicker)]="this.editionService.curentBorderColor" [style.background]="this.editionService.curentBorderColor" cpHeight="230px" cpPosition="top-right"/>
+    <br>
+    <br>
+    <h3> Ecriture dans le pictogramme </h3>
+    <mat-radio-group name="labelPosition">
+      <mat-radio-button #dans (change)="wordLocation(dans)" class="margin-right" value="dans" [checked]="true">Mots dans les pictogrammes</mat-radio-button>
+      <mat-radio-button #dehors (change)="wordLocation(dehors)" value="dehors" [checked]="false">Mots en dehors des pictogrammes</mat-radio-button>
+    </mat-radio-group>
+    <br>
+    <br>
+    <mat-radio-group name="labelBottomTop">
+      <mat-radio-button #bottom (change)="wordBottomTop(bottom)" class="margin-right" value="bottom" [checked]="true">Mots en bas du pictogramme</mat-radio-button>
+      <mat-radio-button #top (change)="wordBottomTop(top)" value="top" [checked]="false">Mots en haut du pictogramme</mat-radio-button>
+    </mat-radio-group>
+  </mat-expansion-panel>
+  <br>
+  <br>
+  <h2>Résultat de la sélection</h2>
+  <mat-grid-list cols="7" rowHeight="250px">
+    <mat-grid-tile *ngFor="let carousel of this.editionService.result;let index = index">
+      <div class="picto">
+        <div class="margin-right">
+          <div *ngIf="this.editionService.imageSelected[index] == undefined || this.editionService.imageSelected[index] == 'null'">
+            <button (click)="inputFile.click()"> ajouter une image
+              <input hidden type="file" (change)="onFileSelected($event, index)" #inputFile>
+            </button>
+          </div>
+          <img *ngIf="this.editionService.imageSelected[index] != undefined && this.editionService.imageSelected[index] != 'null'" src="{{this.editionService.imageSelected[index]}}" alt="" height="200px" width="200px">
+        </div>
+        <div class="labelPicto" *ngIf="transformationValue !== 'capitale' ">
+          {{this.editionService.wordsText[index].text}}
+        </div>
+        <div class="labelPicto" *ngIf="transformationValue === 'capitale' ">
+          {{this.editionService.wordsText[index].text | titlecase}}
+        </div>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <h2>Création du PDF</h2>
+  <mat-radio-group name="pictoPerLine">
+    <mat-radio-button #twoPicto (change)="numberOfPictoPerLines(twoPicto)" class="margin-right" value="2" [checked]="true">2 pictogrammes par lignes </mat-radio-button>
+    <mat-radio-button #threePicto (change)="numberOfPictoPerLines(threePicto)" class="margin-right" value="3" [checked]="false">3 pictogrammes par lignes </mat-radio-button>
+    <mat-radio-button #fourPicto (change)="numberOfPictoPerLines(fourPicto)" class="margin-right" value="4" [checked]="false">4 pictogrammes par lignes </mat-radio-button>
+    <mat-radio-button #eightPicto (change)="numberOfPictoPerLines(eightPicto)" value="8" [checked]="false">8 pictogrammes par lignes </mat-radio-button>
+  </mat-radio-group>
+  <br>
+  <br>
+  <button mat-raised-button color="primary" (click)="generatePDF()">Génération de PDF</button>
+</div>
+

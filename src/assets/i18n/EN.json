@@ -1,0 +1,9 @@
+{
+  "translatePicto": {
+    "enterAWordToSearchFor": "Enter a word to search for",
+    "typeAWord": "Type a word or a sentence",
+    "submit": "Submit",
+    "SearchResult": "Result for the word",
+    "bankImage": "Select image bank(s)"
+  }
+}

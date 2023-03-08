@@ -1,0 +1,78 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <div class="card">
+        <!--Header-->
+        <div class="card-header text-center bg-info text-white">
+            <h1>Création d'un vocabulaire en pictogrammes ARASAAC</h1>
+        </div>
+        <!--Body-->
+        <div class="card-body">
+            <div>
+                <div class="shadow-lg p-4 mb-3 bg-white rounded">
+                    <h2 class="display-4">Rechercher un mot</h2>
+                    <form (ngSubmit)="onSubmit(formText)" #formText="ngForm">
+                        <div>
+                            <mat-form-field class="widthTextarea" appearance="fill">
+                    <textarea matInput type="text" placeholder="{{'translatePicto.typeAWord' | translate}}"
+                              id="sentence-input" name="text" ngModel required rows="2"
+                              (keyup.enter)="onSubmit(formText)"></textarea>
+                            </mat-form-field>
+                            <br>
+                            <button class="margin-right btn btn-primary" type="submit"
+                                    [disabled]="formText.invalid"> {{'translatePicto.submit' | translate}} </button>
+                            <button type="button" class="margin-right btn btn-danger" (click)="erase()"> Effacer
+                            </button>
+                        </div>
+                        <br>
+                        <div *ngFor="let carousel of result;let index = index">
+                            <h2 class="middle">{{'translatePicto.SearchResult' | translate}} :
+                                "{{this.wordsText[index].text}}"</h2>
+                            <carousel *ngIf="carousel[0] !=='https://lig-interaactionpicto.imag.fr/api/p/arasaac/10056'"
+                                      [cellsToScroll]="2" [loop]="true" [arrowsOutside]="true" arrowsTheme="dark">
+                                <div class="carousel-cell" *ngFor="let image of displayResult[index]">
+                                    <img [ngClass]="{'borderColorGreen': this.editionService.imageSelected.indexOf(image) != -1}"
+                                         src="{{image}}" width="100%" height="100%" alt="image"
+                                         (click)="select(image,index)">
+                                </div>
+                            </carousel>
+                            <br/>
+                            <button *ngIf="this.is_selected" class="btn btn-primary float-right" type="submit"
+                                    [disabled]="clicked_add"
+                                    (click)="addPicto(); clicked_add=true">Valider le pictogramme sélectionné
+                            </button>
+                            <div class="middle"
+                                 *ngIf="carousel[0] === 'https://lig-interaactionpicto.imag.fr/api/p/arasaac/10056'">
+                                Aucun pictogramme n'a été trouvé pour ce mot
+                            </div>
+                        </div>
+                        <br/><br/>
+                    </form>
+                </div>
+            </div>
+            <div class="shadow-lg p-4 mb-3 bg-white rounded" *ngIf="this.clicked_add">
+                <h2 class="display-4">La sélection suivante a bien été ajoutée au vocabulaire :</h2>
+                <div class="container-fluid">
+                    <figure class="figure shadow p-3 .bg-light rounded">
+                        <img src="{{this.selected_image_with_url}}" width="200px" height="auto" alt="{{this.text}}">
+                        <figcaption class="figure-caption text-right">{{this.text}} / {{this.selected_image}} </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <!--footer-->
+        <div class="card-footer text-muted">
+            <div class="row">
+                <div class="col-sm">
+                    <img src="../../../assets/images/logos.png" class="img-fluid" alt="Responsive image">
+                </div>
+                <div class="col-sm">
+                </div>
+                <div class="col-sm float-end">
+                    <img src="../../../assets/images/propicto.png" width="150px" height="auto"
+                         class="rounded float-right" alt="...">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
