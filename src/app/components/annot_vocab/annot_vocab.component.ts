@@ -13,7 +13,7 @@ declare var getTokensForTS:any;
 declare var getKeyPicto:any;
 declare var clearUrlImageJS:any;
 declare var setDataTS:any;
-declare var mkdirJ:any;
+declare var mkdirAnnotVocab:any;
 
 export interface Sentences{
   sentence: string,
@@ -257,9 +257,9 @@ export class AnnotVocabComponent implements OnInit {
   }
 
   saveUsersDataToServer(index: string, text:string){
-    const data = [text, index];
+    const data = [[text], [index]];
     setDataTS(data);
-    mkdirJ();
+    mkdirAnnotVocab();
   }
 
 }

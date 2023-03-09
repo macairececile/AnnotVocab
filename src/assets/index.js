@@ -80,15 +80,15 @@ function monitorInput(textInput, lang) {
   let currentText = textInput.replace(/\n|\s{2,}/g, ' ').replace(/^\s/, '');
   sentenceInput = currentText;
   text = currentText;
-  console.log(text)
+
   this.resetResultPicto();
   this.tokenize(currentText, lang, tokenized);
 }
 
 // called on api response with tokenization results
 function tokenized(result) {
-  console.log(result)
   tokens = result.tokens;
+  // meaningsList.textContent = "";
   let len = selectedMeanings.length;
   selectedMeanings.length = tokens.length;
   selectedMeanings.fill(0, len);
@@ -211,6 +211,7 @@ function clearUrlImageJS(){
 
 //request to the server at url
 function _phoneHome(path, callback, error) {
+
   if (error === undefined) error = callback;
   let xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
@@ -219,7 +220,6 @@ function _phoneHome(path, callback, error) {
     if (xhr.status == 200) callback(xhr.response);
     else error(undefined, xhr.response);
   });
-  console.log(path.join('/'))
   xhr.open('GET', 'https://lig-interaactionpicto.imag.fr/api/' + path.join('/'));
   xhr.send();
 }
@@ -255,9 +255,14 @@ function mkdirJ(data,callback,error){
   this._phoneHome(path, callback, error);
 }
 
+function mkdirAnnotVocab(data,callback,error){
+  let path = ['mkdirAnnotVocab', dataJS];
+  this._phoneHome(path, callback, error);
+}
+
 function setDataTS(value){
   dataJS = value;
-  console.log(dataJS);
+  console.log("DataJS = " + dataJS);
 }
 
 // DIRECT DATA SEARCH

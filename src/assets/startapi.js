@@ -151,18 +151,24 @@ function ArrayToList(tab){
 function mkdirJS(value){
   value = replaceAllElem(value);
   value = value.split(',');
-  var text = value[0];
-  var id = value[1];
+  var resultArrayToList = ArrayToList(value)
+  var tabWordUrl = resultArrayToList[0];
+  var text = resultArrayToList[1];
 
   var date = new Date();
   var dateNow = Date.now().toString();
   date = date.toLocaleDateString();
+  var data = JSON.stringify(tabWordUrl);
+  console.log('data : ', data);
   //document
-  var doc = {name:'request'+dateNow+'.json',
+  var doc = {document:{
+    name:'request'+dateNow+'.json',
       date: date,
-      text: text,
-	  picto: id
-    }
+      sentences:{
+        text: text,
+        words:tabWordUrl
+      }
+    }};
   doc = JSON.stringify(doc);
   console.log('doc',doc);
   fs.mkdirSync('requests/', { recursive: true });
@@ -170,6 +176,31 @@ function mkdirJS(value){
     if (err) throw err;
     console.log('Fichier créé !');
   });
+}
+
+function mkdirAnnotVocab(value){
+	value = value.split(',');
+	var text = value[0];
+	var id = value[1];
+
+	var date = new Date();
+	var dateNow = Date.now().toString();
+	date = date.toLocaleDateString();
+	//document
+	var doc = {document:{
+		name:'requestsAnnotVocab'+dateNow+'.json',
+			date: date,
+			text: text,
+			picto: id
+		}};
+	doc = JSON.stringify(doc);
+	console.log('doc',doc);
+	fs.mkdirSync('requestsAnnotVocab/', { recursive: true });
+	fs.appendFile('requestsAnnotVocab/requestsAnnotVocab'+dateNow+'.json', doc, function (err){
+		if (err) throw err;
+		console.log('Fichier créé !');
+	});
+
 }
 
 // TOOL UPDATING
@@ -469,6 +500,10 @@ app.get('/mkdirJS', (q, r) => {
   r.send(mkdirJS());
 });
 
+app.get('/mkdirAnnotVocab', (q, r) => {
+	r.send(mkdirAnnotVocab());
+});
+
 function appGetToolbox(path, then) {
 	app.get(path, (q, r) => {
 		let toolbox = has(toolboxes, q.params.lang);
@@ -507,6 +542,11 @@ app.get('/p/:bank/:file', (q, r) => {
 app.get('/mkdirJS/:data', (q, r) => {
   let data = q.params.data;
   r.send(mkdirJS(data));
+});
+
+app.get('/mkdirAnnotVocab/:data', (q, r) => {
+	let data = q.params.data;
+	r.send(mkdirAnnotVocab(data));
 });
 
 // DIRECT DATA ACCESS
