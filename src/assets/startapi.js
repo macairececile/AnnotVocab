@@ -1,14 +1,9 @@
 var express = require('express');
-var cors = require('cors');
 var natural = require('natural');
 var fs = require('fs');
 var Dichotomous = require('./dicho').Dichotomous;
 var app = express();
 var port = 30000;
-
-app.use(cors({
-  origin: '*'
-}));
 
 // utility functions
 var read = fileName => fs.readFileSync(fileName, 'utf8');
@@ -162,12 +157,12 @@ function mkdirJS(value){
   console.log('data : ', data);
   //document
   var doc = {document:{
-    name:'request'+dateNow+'.json',
-      date: date,
-      sentences:{
-        text: text,
-        words:tabWordUrl
-      }
+	  name:'request'+dateNow+'.json',
+		  date: date,
+		  sentences:{
+		  	text: text, words:tabWordUrl
+      },
+		  version: '10 février 2023'
     }};
   doc = JSON.stringify(doc);
   console.log('doc',doc);
@@ -178,6 +173,10 @@ function mkdirJS(value){
   });
 }
 
+function mkdirPostEdition(value){
+	value = value.split(',');
+}
+
 function mkdirAnnotVocab(value){
 	value = value.split(',');
 	var text = value[0];
@@ -186,13 +185,13 @@ function mkdirAnnotVocab(value){
 	var date = new Date();
 	var dateNow = Date.now().toString();
 	date = date.toLocaleDateString();
-	//document
-	var doc = {document:{
+	var doc = {
 		name:'requestsAnnotVocab'+dateNow+'.json',
-			date: date,
-			text: text,
-			picto: id
-		}};
+		date: date,
+		text: text,
+		picto: id,
+		version: '10 février 2023'
+	};
 	doc = JSON.stringify(doc);
 	console.log('doc',doc);
 	fs.mkdirSync('requestsAnnotVocab/', { recursive: true });
@@ -500,6 +499,10 @@ app.get('/mkdirJS', (q, r) => {
   r.send(mkdirJS());
 });
 
+app.get('/mkdirPostEdition', (q, r) => {
+	r.send(mkdirPostEdition());
+});
+
 app.get('/mkdirAnnotVocab', (q, r) => {
 	r.send(mkdirAnnotVocab());
 });
@@ -542,6 +545,11 @@ app.get('/p/:bank/:file', (q, r) => {
 app.get('/mkdirJS/:data', (q, r) => {
   let data = q.params.data;
   r.send(mkdirJS(data));
+});
+
+app.get('/mkdirPostEdition', (q, r) => {
+	let data = q.params.data;
+	r.send(mkdirPostEdition(data));
 });
 
 app.get('/mkdirAnnotVocab/:data', (q, r) => {

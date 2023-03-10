@@ -255,6 +255,11 @@ function mkdirJ(data,callback,error){
   this._phoneHome(path, callback, error);
 }
 
+function mkdirPostEdition(data,callback,error){
+  let path = ['mkdirPostEditio', dataJS];
+  this._phoneHome(path, callback, error);
+}
+
 function mkdirAnnotVocab(data,callback,error){
   let path = ['mkdirAnnotVocab', dataJS];
   this._phoneHome(path, callback, error);
