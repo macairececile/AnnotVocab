@@ -51,6 +51,7 @@ export class AnnotVocabComponent implements OnInit {
   pictosStyles:string[] = [];
   pictosVisibility:boolean[] = [];
   text:string = '';
+  loading: boolean = false;
 
   constructor(public languageService: LanguageService,
               public editionService: EditionService,
@@ -64,6 +65,7 @@ export class AnnotVocabComponent implements OnInit {
   }
 
   onSubmit(formText: NgForm) {
+    this.loading = true;
     this.clicked_add = false;
     this.resetRequest();
     this.wordSearch = formText.form.value.text;
@@ -76,6 +78,7 @@ export class AnnotVocabComponent implements OnInit {
     let textInput = formText.form.value.text.normalize("NFD").replace(/\p{Diacritic}/gu, "");
     monitorInput(textInput, this.languageService.languageSearch);
     setTimeout(()=> {
+      this.loading = false;
       this.result = getUrlPicto();
       this.editionService.result = this.result;
       this.keyPicto = getKeyPicto();
@@ -103,7 +106,7 @@ export class AnnotVocabComponent implements OnInit {
         this.editionService.imageSelected.push('null');
       });
       this.duplicateCaseKey(this.keyPicto);
-    },500);
+    },1000);
   }
 
   resetRequest(){

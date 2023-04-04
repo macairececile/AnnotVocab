@@ -153,3 +153,8 @@ carousel{
 .borderColorGreen{
   border: solid green;
 }
+
+.loader {
+  width: 3cm;
+  height: 3cm;
+}

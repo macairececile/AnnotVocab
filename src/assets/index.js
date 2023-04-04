@@ -19,8 +19,8 @@ var selectedLibrary;
 var dragged;
 var lang;
 var mobile = false;
-var urlImageJS = [];
-var keyImageJS = [];
+var urlImageJS = [[]];
+var keyImageJS = [[]];
 var tokensJS = [];
 var dataJS = "Salut";
 
@@ -123,7 +123,7 @@ function onMeaningSelection(e) {
 function refreshPictograms() {
   let synsets = tokens.map((token, t) => {
     let s = selectedMeanings[t];
-    return token.synsets[0];
+    return token.synsets;
   });
   if (synsets.length > 0) {
     this.pictograms(synsets,pictogramsReceived);
@@ -168,20 +168,18 @@ function pictogramsReceived(pictograms) {
     // console.log('key in expressions : ', key);
     let pictograms = expressions[key];
     pictograms.sort(relevanceComparator);
-    let urlImage = [];
-    let keyImage = [];
     for (let p in pictograms) {
       let url = 'https://lig-interaactionpicto.imag.fr/api/' + pictograms[p][1];
-      let picto = document.createElement('img');
-      picto.src = url;
-      picto.draggable = true;
-      picto.dataset.key = key;
-      picto.dataset.url = url;
-      urlImage.push(url);
-      keyImage.push(key);
+      if (!urlImageJS[0].includes(url)){
+        let picto = document.createElement('img');
+        picto.src = url;
+        picto.draggable = true;
+        picto.dataset.key = key;
+        picto.dataset.url = url;
+        urlImageJS[0].push(url);
+        keyImageJS[0].push(key);
+      }
     }
-    saveKeyPicto(keyImage);
-    saveUrlPicto(urlImage);
   }
 }
 // build an array of keys for the typescript file
@@ -206,7 +204,7 @@ function getUrlPicto(){
 
 // reset urls when we send a new request
 function clearUrlImageJS(){
-  urlImageJS = [];
+  urlImageJS = [[]];
 }
 
 //request to the server at url
@@ -241,8 +239,10 @@ function pictogramsFromName(sentence, language, callback, error) {
 }
 
 function pictograms(synsets, callback, error) {
-  let path = ['s2p', synsets.map(encodeURIComponent).join('+')];
-  this._phoneHome(path, callback, error);
+  for (let i=0; i<synsets[0].length; i++){
+    let path = ['s2p', synsets[0][i]];
+    this._phoneHome(path, callback, error);
+  }
 }
 
 function resetResultPicto(callback,error){
