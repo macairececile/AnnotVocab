@@ -7,6 +7,7 @@ import {AnnotVocabComponent} from "./components/annot_vocab/annot_vocab.componen
 import {PostEditionExitComponent} from "./components/post_edition_exit/post-edition-exit.component";
 import {PostEditionComponent} from "./components/post_edition/post-edition.component";
 import {PostEditionHomeComponent} from "./components/post_edition_home/post-edition-home.component";
+import {AdminComponent} from "./components/admin/admin.component";
 
 const routes: Routes = [
   {path: 'print', component:SelectPictoComponent},
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path: 'post_edition', component:PostEditionComponent},
   {path: 'post_edition_exit', component:PostEditionExitComponent},
   {path: 'annot_vocab', component:AnnotVocabComponent},
+  {path: 'admin', component:AdminComponent},
   {path: '', redirectTo:'picto', pathMatch: 'full'}
 ];
 

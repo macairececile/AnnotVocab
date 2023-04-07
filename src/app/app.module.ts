@@ -30,6 +30,7 @@ import { PostEditionExitComponent } from './components/post_edition_exit/post-ed
 import {AnnotVocabComponent} from './components/annot_vocab/annot_vocab.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { AdminComponent } from './components/admin/admin.component';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
@@ -46,7 +47,8 @@ export function createTranslateLoader(http: HttpClient) {
     PostEditionComponent,
     PostEditionHomeComponent,
     PostEditionExitComponent,
-    AnnotVocabComponent
+    AnnotVocabComponent,
+    AdminComponent
   ],
   imports: [
     TranslateModule.forRoot({

@@ -18,6 +18,7 @@ var dirs = {
 	wordnets: 'wordnets/',
 	pictograms: 'pictograms/',
 	sessions: 'sessions/',
+	annotVocab: 'requestsAnnotVocab/',
 };
 
 // pictogram banks
@@ -199,7 +200,22 @@ function mkdirAnnotVocab(value){
 		if (err) throw err;
 		console.log('Fichier créé !');
 	});
+}
 
+function getAllAnnotVocabRequest(r){
+	const listFiles = [];
+
+	fs.readdir(dirs.annotVocab, function (err, files) {
+		if (err) {
+			return console.log('Unable to scan directory: ' + err);
+		}
+		files.forEach(function (file) {
+			let rawData = fs.readFileSync(dirs.annotVocab + '/' + file);
+			let data = JSON.parse(rawData);
+			listFiles.push(data);
+		});
+		r.send(listFiles);
+	});
 }
 
 // TOOL UPDATING
@@ -341,7 +357,6 @@ function synsetsToPictogram(synsetsStr) {
     }
   }
 	addRemainingPicto();
-  console.log('results dans l"ancienne fonction : ', resultPicto);
 	return JSON.stringify(resultPicto);
 }
 
@@ -555,6 +570,10 @@ app.get('/mkdirPostEdition', (q, r) => {
 app.get('/mkdirAnnotVocab/:data', (q, r) => {
 	let data = q.params.data;
 	r.send(mkdirAnnotVocab(data));
+});
+
+app.get('/getAllAnnotVocabRequest', (q, r) => {
+	getAllAnnotVocabRequest(r);
 });
 
 // DIRECT DATA ACCESS

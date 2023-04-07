@@ -23,6 +23,7 @@ var urlImageJS = [[]];
 var keyImageJS = [[]];
 var tokensJS = [];
 var dataJS = "Salut";
+var requestAnnotVocab = [];
 
 var internationalization = {
   'fra': {
@@ -205,6 +206,19 @@ function getUrlPicto(){
 // reset urls when we send a new request
 function clearUrlImageJS(){
   urlImageJS = [[]];
+  keyImageJS = [[]];
+}
+
+function AnnotVocabRequest(){
+  getAllAnnotVocabRequest(setAnnotVocabRequest);
+}
+
+function setAnnotVocabRequest(value){
+  requestAnnotVocab = value;
+}
+
+function getAnnotVocabRequest(){
+  return requestAnnotVocab;
 }
 
 //request to the server at url
@@ -222,6 +236,19 @@ function _phoneHome(path, callback, error) {
   xhr.send();
 }
 
+function _phoneHomeRequest(path, callback, error){
+
+  if (error === undefined) error = callback;
+  let xhr = new XMLHttpRequest();
+  xhr.addEventListener('load', (e) => {
+    let xhr = e.target;
+    if (xhr.status == 200) setAnnotVocabRequest(xhr.response);
+    else error(undefined, xhr.response);
+  });
+  xhr.open('GET', 'https://lig-interaactionpicto.imag.fr/api/' + path.join('/'));
+  xhr.send(null);
+}
+
 function _encode(text) {
   return encodeURIComponent(text);
 }
@@ -230,6 +257,11 @@ function _encode(text) {
 function tokenize(sentence, language, callback, error) {
   let path = ['t2s', language, this._encode(sentence)];
   this._phoneHome(path, callback, error);
+}
+
+function getAllAnnotVocabRequest(callback, error) {
+  let path = ['getAllAnnotVocabRequest'];
+  this._phoneHomeRequest(path, callback, error);
 }
 
 // use the function pictogramsFormName from the file : startapi.js

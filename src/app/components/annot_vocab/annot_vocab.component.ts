@@ -65,48 +65,50 @@ export class AnnotVocabComponent implements OnInit {
   }
 
   onSubmit(formText: NgForm) {
-    this.loading = true;
-    this.clicked_add = false;
-    this.resetRequest();
-    this.wordSearch = formText.form.value.text;
-    const numberOfWord = this.wordSearch.split(' ');
-    this.editionService.wordsSearchTab = numberOfWord;
-    if(numberOfWord.length > 50){
-      this.openDialog();
-      return;
-    }
-    let textInput = formText.form.value.text.normalize("NFD").replace(/\p{Diacritic}/gu, "");
-    monitorInput(textInput, this.languageService.languageSearch);
-    setTimeout(()=> {
-      this.loading = false;
-      this.result = getUrlPicto();
-      this.editionService.result = this.result;
-      this.keyPicto = getKeyPicto();
-      for (let i=0; i<this.result.length; i = i+1){
-        this.result[i].forEach(value => {
-          const tabValue = value.split('/');
-          if(this.banksChecked.includes(tabValue[5])){
-            this.resultTab.push(value);
-          }
+    if (!this.loading){
+      this.loading = true;
+      this.clicked_add = false;
+      this.resetRequest();
+      this.wordSearch = formText.form.value.text;
+      const numberOfWord = this.wordSearch.split(' ');
+      this.editionService.wordsSearchTab = numberOfWord;
+      if(numberOfWord.length > 50){
+        this.openDialog();
+        return;
+      }
+      let textInput = formText.form.value.text.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+      monitorInput(textInput, this.languageService.languageSearch);
+      setTimeout(()=> {
+        this.loading = false;
+        this.result = getUrlPicto();
+        this.editionService.result = this.result;
+        this.keyPicto = getKeyPicto();
+        for (let i=0; i<this.result.length; i = i+1){
+          this.result[i].forEach(value => {
+            const tabValue = value.split('/');
+            if(this.banksChecked.includes(tabValue[5])){
+              this.resultTab.push(value);
+            }
+          });
+          this.displayResult.push(this.resultTab);
+          this.resultTab = [];
+        }
+        this.wordsText = getTokensForTS();
+        this.editionService.wordsText = this.wordsText;
+        this.editionService.wordsTextSave = JSON.parse(JSON.stringify(this.wordsText));
+        this.editionService.isSearch = true;
+        if(this.dataRegisterChecked){
+          this.saveData.dataRegisterChecked = true;
+          this.saveData.addDataSearched(this.editionService.wordsText);
+        }else{
+          this.saveData.dataRegisterChecked = false;
+        }
+        numberOfWord.forEach(word => {
+          this.editionService.imageSelected.push('null');
         });
-        this.displayResult.push(this.resultTab);
-        this.resultTab = [];
-      }
-      this.wordsText = getTokensForTS();
-      this.editionService.wordsText = this.wordsText;
-      this.editionService.wordsTextSave = JSON.parse(JSON.stringify(this.wordsText));
-      this.editionService.isSearch = true;
-      if(this.dataRegisterChecked){
-        this.saveData.dataRegisterChecked = true;
-        this.saveData.addDataSearched(this.editionService.wordsText);
-      }else{
-        this.saveData.dataRegisterChecked = false;
-      }
-      numberOfWord.forEach(word => {
-        this.editionService.imageSelected.push('null');
-      });
-      this.duplicateCaseKey(this.keyPicto);
-    },1000);
+        this.duplicateCaseKey(this.keyPicto);
+      },1000);
+    }
   }
 
   resetRequest(){
