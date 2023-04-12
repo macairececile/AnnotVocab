@@ -19,6 +19,7 @@ var dirs = {
 	pictograms: 'pictograms/',
 	sessions: 'sessions/',
 	annotVocab: 'requestsAnnotVocab/',
+	postEdition: 'requestsPostEdition',
 };
 
 // pictogram banks
@@ -175,7 +176,32 @@ function mkdirJS(value){
 }
 
 function mkdirPostEdition(value){
+	value = replaceAllElem(value);
 	value = value.split(',');
+	var resultArrayToList = ArrayToList(value)
+	var tabWordUrl = resultArrayToList[0];
+	var text = resultArrayToList[1];
+
+	var date = new Date();
+	var dateNow = Date.now().toString();
+	date = date.toLocaleDateString();
+	var data = JSON.stringify(tabWordUrl);
+	console.log('data : ', data);
+	//document
+	var doc = {document:{
+			name:'request'+dateNow+'.json',
+			date: date,
+			text: text,
+			picto: tabWordUrl,
+			version: '10 février 2023'
+		}};
+	doc = JSON.stringify(doc);
+	console.log('doc',doc);
+	fs.mkdirSync('requestsPostEdition/', { recursive: true });
+	fs.appendFile('requestsPostEdition/requestsPostEdition'+dateNow+'.json', doc, function (err){
+		if (err) throw err;
+		console.log('Fichier créé !');
+	});
 }
 
 function mkdirAnnotVocab(value){
@@ -216,6 +242,42 @@ function getAllAnnotVocabRequest(r){
 		});
 		r.send(listFiles);
 	});
+}
+
+function getAllPostEditionRequest(r){
+	const listFiles = [];
+
+	fs.readdir(dirs.postEdition, function (err, files) {
+		if (err) {
+			return console.log('Unable to scan directory: ' + err);
+		}
+		files.forEach(function (file) {
+			let rawData = fs.readFileSync(dirs.postEdition + '/' + file);
+			let data = JSON.parse(rawData);
+			listFiles.push(data);
+		});
+		r.send(listFiles);
+	});
+}
+
+function removeAnnotVocabRequest(nameRequest){
+	const pathFile = dirs.annotVocab + '/' + nameRequest + '.json';
+
+	try {
+		fs.unlinkSync(pathFile);
+	} catch(err) {
+		console.error(err);
+	}
+}
+
+function removePostEditionRequest(nameRequest){
+	const pathFile = dirs.postEdition + '/' + nameRequest + '.json';
+
+	try {
+		fs.unlinkSync(pathFile);
+	} catch(err) {
+		console.error(err);
+	}
 }
 
 // TOOL UPDATING
@@ -574,6 +636,20 @@ app.get('/mkdirAnnotVocab/:data', (q, r) => {
 
 app.get('/getAllAnnotVocabRequest', (q, r) => {
 	getAllAnnotVocabRequest(r);
+});
+
+app.get('/getAllPostEditionRequest', (q, r) => {
+	getAllPostEditionRequest(r);
+});
+
+app.get('/removeAnnotVocabRequest/:data', (q, r) => {
+	let data = q.params.data;
+	r.send(removeAnnotVocabRequest(data));
+});
+
+app.get('/removePostEditionRequest/:data', (q, r) => {
+	let data = q.params.data;
+	r.send(removePostEditionRequest(data));
 });
 
 // DIRECT DATA ACCESS

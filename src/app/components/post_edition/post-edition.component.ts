@@ -14,7 +14,7 @@ declare var getTokensForTS:any;
 declare var getKeyPicto:any;
 declare var clearUrlImageJS:any;
 declare var setDataTS:any;
-declare var mkdirJ:any;
+declare var mkdirPostEdition:any;
 
 export interface Sentences{
   sentence: string,
@@ -277,7 +277,7 @@ export class PostEditionComponent implements OnInit {
     let urlPictoDataSelected : string[] = JSON.parse(JSON.stringify(this.pictos));
     const data = [sentence, urlPictoDataSelected];
     setDataTS(data);
-    mkdirJ();
+    mkdirPostEdition();
   }
 
   goToNextTask(index: number, sentence:string, pictos:string){

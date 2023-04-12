@@ -24,6 +24,7 @@ var keyImageJS = [[]];
 var tokensJS = [];
 var dataJS = "Salut";
 var requestAnnotVocab = [];
+var requestPostEdition = [];
 
 var internationalization = {
   'fra': {
@@ -221,6 +222,18 @@ function getAnnotVocabRequest(){
   return requestAnnotVocab;
 }
 
+function PostEditionRequest(){
+  getAllPostEditionRequest(setPostEditionRequest);
+}
+
+function setPostEditionRequest(value){
+  requestPostEdition = value;
+}
+
+function getPostEditionRequest(){
+  return requestPostEdition;
+}
+
 //request to the server at url
 function _phoneHome(path, callback, error) {
 
@@ -264,6 +277,21 @@ function getAllAnnotVocabRequest(callback, error) {
   this._phoneHomeRequest(path, callback, error);
 }
 
+function removeAnnotVocabRequest(nameRequest, callback, error){
+  let path = ['removeAnnotVocabRequest', nameRequest];
+  this._phoneHome(path, callback, error);
+}
+
+function removePostEditionRequest(nameRequest, callback, error){
+  let path = ['removePostEditionRequest', nameRequest];
+  this._phoneHome(path, callback, error);
+}
+
+function getAllPostEditionRequest(callback, error) {
+  let path = ['getAllPostEditionRequest'];
+  this._phoneHomeRequest(path, callback, error);
+}
+
 // use the function pictogramsFormName from the file : startapi.js
 function pictogramsFromName(sentence, language, callback, error) {
   let path = ['t2p', language, this._encode(sentence)];
@@ -288,7 +316,7 @@ function mkdirJ(data,callback,error){
 }
 
 function mkdirPostEdition(data,callback,error){
-  let path = ['mkdirPostEditio', dataJS];
+  let path = ['mkdirPostEdition', dataJS];
   this._phoneHome(path, callback, error);
 }
 
@@ -299,7 +327,6 @@ function mkdirAnnotVocab(data,callback,error){
 
 function setDataTS(value){
   dataJS = value;
-  console.log("DataJS = " + dataJS);
 }
 
 // DIRECT DATA SEARCH
