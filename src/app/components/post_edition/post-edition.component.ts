@@ -73,8 +73,7 @@ export class PostEditionComponent implements OnInit {
       this.openDialog();
       return;
     }
-    let textInput = formText.form.value.text.normalize("NFD").replace(/\p{Diacritic}/gu, "");
-    monitorInput(textInput, this.languageService.languageSearch);
+    monitorInput(this.wordSearch, this.languageService.languageSearch);
     setTimeout(()=> {
       this.result = getUrlPicto();
       this.editionService.result = this.result;

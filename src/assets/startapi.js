@@ -505,8 +505,7 @@ function sentenceToPictogram(toolbox,text, index){
 
 // this function search synsets in the toolbox from the text wrote by the user
 function sentenceToSynsets(toolbox, text) {
-	let tokenized = toolbox.tokenizer.tokenize(text);
-	console.log('tokenized : ',tokenized);
+	let tokenized = [text];
 	let tokens = [];
 	let definitions = {};
 	let stop = 0;

@@ -79,12 +79,11 @@ function getTokensForTS(){
 // for tokenization, as a first step of the translation process
 function monitorInput(textInput, lang) {
   if (!textUpdated) return;
-  let currentText = textInput.replace(/\n|\s{2,}/g, ' ').replace(/^\s/, '');
-  sentenceInput = currentText;
-  text = currentText;
+  sentenceInput = textInput;
+  text = textInput;
 
   this.resetResultPicto();
-  this.tokenize(currentText, lang, tokenized);
+  this.tokenize(textInput, lang, tokenized);
 }
 
 // called on api response with tokenization results
