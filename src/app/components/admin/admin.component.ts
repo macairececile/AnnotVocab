@@ -35,6 +35,9 @@ export class AdminComponent{
       this.disableButtons = true;
       this.requestType = "AnnotVocab";
       this.needReset = false;
+      this.showError = false;
+      this.allRequests = [];
+      this.getRequests = false;
 
       getAllAnnotVocabRequest();
 
@@ -47,11 +50,12 @@ export class AdminComponent{
             clearInterval(requestInterval);
             this.showError = true;
             this.disableButtons = false;
+            this.getRequests = true;
           }
         }else {
           clearInterval(requestInterval);
           this.getRequests = true;
-          this.generateTabFromRequests(this.getResponse);
+          this.generateTabFromAnnotVocabRequests(this.getResponse);
           this.disableButtons = false;
           if (this.needReset){
             this.getAllAnnotVocabRequestFromServer();
@@ -68,6 +72,9 @@ export class AdminComponent{
       this.disableButtons = true;
       this.requestType = "PostEdition";
       this.needReset = false;
+      this.showError = false;
+      this.allRequests = [];
+      this.getRequests = false;
 
       getAllPostEditionRequest();
 
@@ -80,11 +87,12 @@ export class AdminComponent{
             clearInterval(requestInterval);
             this.showError = true;
             this.disableButtons = false;
+            this.getRequests = true;
           }
         }else {
           clearInterval(requestInterval);
           this.getRequests = true;
-          this.generateTabFromRequests(this.getResponse);
+          this.generateTabFromPostEditionRequests(this.getResponse);
           this.disableButtons = false;
           if (this.needReset){
             this.getAllPostEditionRequestFromServer();
@@ -94,7 +102,7 @@ export class AdminComponent{
     }
   }
 
-  generateTabFromRequests(value: any){
+  generateTabFromAnnotVocabRequests(value: any){
     let tmpValue: any = value;
     let tmpTab: string[];
     let result: string[][][] = [];
@@ -119,7 +127,52 @@ export class AdminComponent{
         index++;
       }
     }
-    this.checkForDuplicate(result);
+    //this.checkForDuplicate(result);
+    this.allRequests = result;
+  }
+
+  generateTabFromPostEditionRequests(value: any){
+    let tmpValue: any = value;
+    let tmpTab: string[];
+    let result: string[][][] = [];
+
+    tmpValue = tmpValue.replace("[", "");
+    tmpValue = tmpValue.replace("]", "");
+    tmpValue = tmpValue.replaceAll("{", "");
+    tmpValue = tmpValue.replaceAll("}", "");
+    tmpValue = tmpValue.replaceAll('"', "");
+    tmpTab = tmpValue.split(",");
+
+    let tmpTabBis: string[] = [];
+    let tmpData: string[][] = [];
+
+    let indexIdPicto = 0;
+    for (let i=0; i<tmpTab.length; i++){
+      if (tmpTab[i].includes("picto")){
+        indexIdPicto = i;
+        i++;
+        while (tmpTab[i] != " "){
+          tmpTab[indexIdPicto] += "," + tmpTab[i];
+          i++;
+        }
+        tmpTabBis.push(tmpTab[indexIdPicto]);
+      }else {
+        tmpTabBis.push(tmpTab[i]);
+      }
+    }
+
+    let index: number = 0;
+    for (let i=0; i<tmpTabBis.length; i++){
+      tmpData.push(tmpTabBis[i].split(':'));
+      if (index === 4){
+        result.push(tmpData);
+        tmpData = [];
+        index = 0;
+      }else {
+        index++;
+      }
+    }
+
     this.allRequests = result;
   }
 

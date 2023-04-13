@@ -275,7 +275,7 @@ export class PostEditionComponent implements OnInit {
 
   saveUsersDataToServer(index: number, sentence:string){
     let urlPictoDataSelected : string[] = JSON.parse(JSON.stringify(this.pictos));
-    const data = [sentence, urlPictoDataSelected];
+    const data = [[sentence], [urlPictoDataSelected]];
     setDataTS(data);
     mkdirPostEdition();
   }

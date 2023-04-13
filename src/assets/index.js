@@ -249,13 +249,26 @@ function _phoneHome(path, callback, error) {
   xhr.send();
 }
 
-function _phoneHomeRequest(path, callback, error){
+function _phoneHomeAnnotVocab(path, callback, error){
 
   if (error === undefined) error = callback;
   let xhr = new XMLHttpRequest();
   xhr.addEventListener('load', (e) => {
     let xhr = e.target;
     if (xhr.status == 200) setAnnotVocabRequest(xhr.response);
+    else error(undefined, xhr.response);
+  });
+  xhr.open('GET', 'https://lig-interaactionpicto.imag.fr/api/' + path.join('/'));
+  xhr.send(null);
+}
+
+function _phoneHomePostEdition(path, callback, error){
+
+  if (error === undefined) error = callback;
+  let xhr = new XMLHttpRequest();
+  xhr.addEventListener('load', (e) => {
+    let xhr = e.target;
+    if (xhr.status == 200) setPostEditionRequest(xhr.response);
     else error(undefined, xhr.response);
   });
   xhr.open('GET', 'https://lig-interaactionpicto.imag.fr/api/' + path.join('/'));
@@ -274,7 +287,7 @@ function tokenize(sentence, language, callback, error) {
 
 function getAllAnnotVocabRequest(callback, error) {
   let path = ['getAllAnnotVocabRequest'];
-  this._phoneHomeRequest(path, callback, error);
+  this._phoneHomeAnnotVocab(path, callback, error);
 }
 
 function removeAnnotVocabRequest(nameRequest, callback, error){
@@ -289,7 +302,7 @@ function removePostEditionRequest(nameRequest, callback, error){
 
 function getAllPostEditionRequest(callback, error) {
   let path = ['getAllPostEditionRequest'];
-  this._phoneHomeRequest(path, callback, error);
+  this._phoneHomePostEdition(path, callback, error);
 }
 
 // use the function pictogramsFormName from the file : startapi.js

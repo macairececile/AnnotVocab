@@ -178,21 +178,21 @@ function mkdirJS(value){
 function mkdirPostEdition(value){
 	value = replaceAllElem(value);
 	value = value.split(',');
-	var resultArrayToList = ArrayToList(value)
-	var tabWordUrl = resultArrayToList[0];
-	var text = resultArrayToList[1];
+
+	let idPictos = "";
+	for (let i=1; i<value.length; i++){
+		idPictos += value[i] + ", ";
+	}
 
 	var date = new Date();
 	var dateNow = Date.now().toString();
 	date = date.toLocaleDateString();
-	var data = JSON.stringify(tabWordUrl);
-	console.log('data : ', data);
 	//document
 	var doc = {document:{
 			name:'request'+dateNow+'.json',
 			date: date,
-			text: text,
-			picto: tabWordUrl,
+			text: value[0],
+			picto: idPictos,
 			version: '10 février 2023'
 		}};
 	doc = JSON.stringify(doc);
@@ -624,7 +624,7 @@ app.get('/mkdirJS/:data', (q, r) => {
   r.send(mkdirJS(data));
 });
 
-app.get('/mkdirPostEdition', (q, r) => {
+app.get('/mkdirPostEdition/:data', (q, r) => {
 	let data = q.params.data;
 	r.send(mkdirPostEdition(data));
 });
