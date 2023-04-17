@@ -25,8 +25,13 @@ export class AdminComponent{
   disableButtons: boolean = false;
   needReset: boolean = false;
   requestType: string = "";
+  newRequest: boolean = false;
 
   constructor() { }
+
+  doAnewRequest(){
+    window.location.reload();
+  }
 
   getAllAnnotVocabRequestFromServer(){
     if (!this.isAnnotVocab){
@@ -38,6 +43,7 @@ export class AdminComponent{
       this.showError = false;
       this.allRequests = [];
       this.getRequests = false;
+      this.newRequest = true;
 
       getAllAnnotVocabRequest();
 
@@ -75,6 +81,7 @@ export class AdminComponent{
       this.showError = false;
       this.allRequests = [];
       this.getRequests = false;
+      this.newRequest = true;
 
       getAllPostEditionRequest();
 

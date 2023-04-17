@@ -39,24 +39,21 @@ export class TranslatePictoComponent implements OnInit {
     this.editionService.isSearch = false;
   }
 
-  // getPictoIdsFromTokens(text: string) {
-  //
-  // }
-
   onSubmit(formText: NgForm) {
     this.resetRequest();
     this.wordSearch = formText.form.value.text;
     const numberOfWord = this.wordSearch.split(' ');
+    console.log(numberOfWord);
     this.editionService.wordsSearchTab = numberOfWord;
     if(numberOfWord.length > 50){
       this.openDialog();
       return;
     }
-    let textInput = formText.form.value.text.normalize("NFD").replace(/\p{Diacritic}/gu, "");
-    monitorInput(textInput, this.languageService.languageSearch);
+    monitorInput(this.wordSearch, this.languageService.languageSearch);
 
     setTimeout(()=> {
       this.result = getUrlPicto();
+      console.log(this.result);
       this.editionService.result = this.result;
       this.keyPicto = getKeyPicto();
       for (let i=0; i<this.result.length; i = i+1){
@@ -83,7 +80,7 @@ export class TranslatePictoComponent implements OnInit {
         this.editionService.imageSelected.push('null');
       });
       this.duplicateCaseKey(this.keyPicto);
-    },500);
+    },numberOfWord.length * 2000);
   }
 
   chooseBank(arasaac: HTMLInputElement, mulberry: HTMLInputElement) {

@@ -1,11 +1,10 @@
 <br>
 <div class="container">
-    <h1>Liste des requêtes enregistrer sur le serveur</h1>
+    <h1>Liste des requêtes enregistrées sur le serveur</h1>
     <div class="menu">
-        <div class="btn-group me-2" role="group">
-            <button type="button" class="btn btn-secondary active" (click)="getAllPostEditionRequestFromServer()" [disabled]="disableButtons">Post Edition</button>
-            <button type="button" class="btn btn-secondary" (click)="getAllAnnotVocabRequestFromServer()" [disabled]="disableButtons">Annot Vocab</button>
-        </div>
+        <button *ngIf="!newRequest" type="button" class="btn btn-secondary" (click)="getAllPostEditionRequestFromServer()" [disabled]="disableButtons">Post Edition</button>
+        <button *ngIf="!newRequest" type="button" class="btn btn-secondary" (click)="getAllAnnotVocabRequestFromServer()" [disabled]="disableButtons">Annot Vocab</button>
+        <button *ngIf="newRequest" type="button" class="btn btn-secondary" (click)="doAnewRequest()">Faire une autre requête sur le serveur</button>
     </div>
     <div *ngIf="isPostEdition">
         <br>
@@ -18,7 +17,7 @@
             <span>En cours de chargement ...</span>
         </div>
         <div *ngIf="showError" class="error">
-            <h1>Il n'y a pas de requêtes enregistrer sur le serveur</h1>
+            <h1>Il n'y a pas de requêtes enregistrées sur le serveur</h1>
         </div>
         <table *ngIf="getRequests" class="table">
             <thead class="thead-light">

@@ -419,7 +419,10 @@ function synsetsToPictogram(synsetsStr) {
     }
   }
 	addRemainingPicto();
-	return JSON.stringify(resultPicto);
+
+	let result = JSON.stringify(resultPicto);
+	resultPicto = {};
+	return result;
 }
 
 // search with dichotomous method
@@ -505,7 +508,7 @@ function sentenceToPictogram(toolbox,text, index){
 
 // this function search synsets in the toolbox from the text wrote by the user
 function sentenceToSynsets(toolbox, text) {
-	let tokenized = [text];
+	let tokenized = text.split(" ");
 	let tokens = [];
 	let definitions = {};
 	let stop = 0;

@@ -19,8 +19,8 @@ var selectedLibrary;
 var dragged;
 var lang;
 var mobile = false;
-var urlImageJS = [[]];
-var keyImageJS = [[]];
+var urlImageJS = [];
+var keyImageJS = [];
 var tokensJS = [];
 var dataJS = "Salut";
 var requestAnnotVocab = [];
@@ -81,6 +81,12 @@ function monitorInput(textInput, lang) {
   if (!textUpdated) return;
   sentenceInput = textInput;
   text = textInput;
+
+  const textLength = textInput.split(" ");
+  for ( let i=0; i<textLength.length; i++){
+    urlImageJS.push([]);
+    keyImageJS.push([]);
+  }
 
   this.resetResultPicto();
   this.tokenize(textInput, lang, tokenized);
@@ -144,8 +150,9 @@ function relevanceComparator(a, b) {
 // called when the API has found relevant pictograms
 // for the selected meanings. This function will organize
 // pictograms in "libraries".
-function pictogramsReceived(pictograms) {
+function pictogramsReceived(pictograms, indexPictos) {
   let expressions = {};
+  console.log(pictograms);
   for (let p in pictograms) {
     let pictoData = pictograms[p];
     let count = pictoData.shift();
@@ -164,9 +171,8 @@ function pictogramsReceived(pictograms) {
   if (selectedLibrary === undefined || expressions[selectedLibrary] === undefined) {
     selectedLibrary = Object.keys(expressions)[0];
   }
-  // console.log('expressions : ',expressions);
+
   for (key in expressions) {
-    // console.log('key in expressions : ', key);
     let pictograms = expressions[key];
     pictograms.sort(relevanceComparator);
     for (let p in pictograms) {
@@ -177,12 +183,13 @@ function pictogramsReceived(pictograms) {
         picto.draggable = true;
         picto.dataset.key = key;
         picto.dataset.url = url;
-        urlImageJS[0].push(url);
-        keyImageJS[0].push(key);
+        urlImageJS[indexPictos].push(url);
+        keyImageJS[indexPictos].push(key);
       }
     }
   }
 }
+
 // build an array of keys for the typescript file
 function saveKeyPicto(keyImage){
   keyImageJS.push(keyImage);
@@ -205,8 +212,8 @@ function getUrlPicto(){
 
 // reset urls when we send a new request
 function clearUrlImageJS(){
-  urlImageJS = [[]];
-  keyImageJS = [[]];
+  urlImageJS = [];
+  keyImageJS = [];
 }
 
 function AnnotVocabRequest(){
@@ -242,6 +249,20 @@ function _phoneHome(path, callback, error) {
   xhr.addEventListener('load', (e) => {
     let xhr = e.target;
     if (xhr.status == 200) callback(xhr.response);
+    else error(undefined, xhr.response);
+  });
+  xhr.open('GET', 'https://lig-interaactionpicto.imag.fr/api/' + path.join('/'));
+  xhr.send();
+}
+
+function _phoneHomePicto(path, callback, index, error) {
+
+  if (error === undefined) error = callback;
+  let xhr = new XMLHttpRequest();
+  xhr.responseType = 'json';
+  xhr.addEventListener('load', (e) => {
+    let xhr = e.target;
+    if (xhr.status == 200) callback(xhr.response, index);
     else error(undefined, xhr.response);
   });
   xhr.open('GET', 'https://lig-interaactionpicto.imag.fr/api/' + path.join('/'));
@@ -311,9 +332,11 @@ function pictogramsFromName(sentence, language, callback, error) {
 }
 
 function pictograms(synsets, callback, error) {
-  for (let i=0; i<synsets[0].length; i++){
-    let path = ['s2p', synsets[0][i]];
-    this._phoneHome(path, callback, error);
+  for (let i=0; i<synsets.length; i++){
+    for (let j=0; j<synsets[i].length; j++){
+      let path = ['s2p', synsets[i][j]];
+      this._phoneHomePicto(path, callback, i, error);
+    }
   }
 }
 
