@@ -69,8 +69,9 @@ export class AnnotVocabComponent implements OnInit {
       this.loading = true;
       this.clicked_add = false;
       this.resetRequest();
-      this.wordSearch = formText.form.value.text;
+      this.wordSearch = this.getTextWhitoutChariot(formText.form.value.text);
       const numberOfWord = this.wordSearch.split(' ');
+      console.log(numberOfWord);
       this.editionService.wordsSearchTab = numberOfWord;
       if(numberOfWord.length > 50){
         this.openDialog();
@@ -106,7 +107,16 @@ export class AnnotVocabComponent implements OnInit {
           this.editionService.imageSelected.push('null');
         });
         this.duplicateCaseKey(this.keyPicto);
-      },1000);
+      },numberOfWord.length * 2000);
+    }
+  }
+
+  getTextWhitoutChariot(text: string){
+    if (text.includes("\r") || text.includes("\n")){
+      text = text.replace(/\n|\r/g,'');
+      return text;
+    }else {
+      return text;
     }
   }
 

@@ -28,7 +28,7 @@ export class TranslatePictoComponent implements OnInit {
   keyPicto:string[][] = [];
   dataRegisterChecked: boolean = true;
   keyDouble: boolean = false;
-
+  loading: boolean = false;
 
   constructor(public languageService: LanguageService,
               public editionService: EditionService,
@@ -40,47 +40,60 @@ export class TranslatePictoComponent implements OnInit {
   }
 
   onSubmit(formText: NgForm) {
-    this.resetRequest();
-    this.wordSearch = formText.form.value.text;
-    const numberOfWord = this.wordSearch.split(' ');
-    console.log(numberOfWord);
-    this.editionService.wordsSearchTab = numberOfWord;
-    if(numberOfWord.length > 50){
-      this.openDialog();
-      return;
-    }
-    monitorInput(this.wordSearch, this.languageService.languageSearch);
+    if (!this.loading){
+      this.loading = true;
+      this.resetRequest();
+      this.wordSearch = this.getTextWhitoutChariot(formText.form.value.text);
+      const numberOfWord = this.wordSearch.split(' ');
+      console.log(numberOfWord);
+      this.editionService.wordsSearchTab = numberOfWord;
+      if(numberOfWord.length > 50){
+        this.openDialog();
+        return;
+      }
+      monitorInput(this.wordSearch, this.languageService.languageSearch);
 
-    setTimeout(()=> {
-      this.result = getUrlPicto();
-      console.log(this.result);
-      this.editionService.result = this.result;
-      this.keyPicto = getKeyPicto();
-      for (let i=0; i<this.result.length; i = i+1){
-        this.result[i].forEach(value => {
-          const tabValue = value.split('/');
-          if(this.banksChecked.includes(tabValue[5])){
-            this.resultTab.push(value);
-          }
+      setTimeout(()=> {
+        this.loading = false;
+        this.result = getUrlPicto();
+        console.log(this.result);
+        this.editionService.result = this.result;
+        this.keyPicto = getKeyPicto();
+        for (let i=0; i<this.result.length; i = i+1){
+          this.result[i].forEach(value => {
+            const tabValue = value.split('/');
+            if(this.banksChecked.includes(tabValue[5])){
+              this.resultTab.push(value);
+            }
+          });
+          this.displayResult.push(this.resultTab);
+          this.resultTab = [];
+        }
+        this.wordsText = getTokensForTS();
+        this.editionService.wordsText = this.wordsText;
+        this.editionService.wordsTextSave = JSON.parse(JSON.stringify(this.wordsText));
+        this.editionService.isSearch = true;
+        if(this.dataRegisterChecked){
+          this.saveData.dataRegisterChecked = true;
+          this.saveData.addDataSearched(this.editionService.wordsText);
+        }else{
+          this.saveData.dataRegisterChecked = false;
+        }
+        numberOfWord.forEach(word => {
+          this.editionService.imageSelected.push('null');
         });
-        this.displayResult.push(this.resultTab);
-        this.resultTab = [];
-      }
-      this.wordsText = getTokensForTS();
-      this.editionService.wordsText = this.wordsText;
-      this.editionService.wordsTextSave = JSON.parse(JSON.stringify(this.wordsText));
-      this.editionService.isSearch = true;
-      if(this.dataRegisterChecked){
-        this.saveData.dataRegisterChecked = true;
-        this.saveData.addDataSearched(this.editionService.wordsText);
-      }else{
-        this.saveData.dataRegisterChecked = false;
-      }
-      numberOfWord.forEach(word => {
-        this.editionService.imageSelected.push('null');
-      });
-      this.duplicateCaseKey(this.keyPicto);
-    },numberOfWord.length * 2000);
+        this.duplicateCaseKey(this.keyPicto);
+      },numberOfWord.length * 2000);
+    }
+  }
+
+  getTextWhitoutChariot(text: string){
+    if (text.includes("\r") || text.includes("\n")){
+      text = text.replace(/\n|\r/g,'');
+      return text;
+    }else {
+      return text;
+    }
   }
 
   chooseBank(arasaac: HTMLInputElement, mulberry: HTMLInputElement) {

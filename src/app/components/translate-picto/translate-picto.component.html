@@ -29,6 +29,11 @@
       <label for="data"><span class="ui"></span>Je veux aider la recherche et j'accepte que mes données soient traitées, utilisées voire diffusées de manière anonymes</label>
     </div>
     <br>
+    <div *ngIf="loading"  class="text-center">
+      <div class="spinner-border loader" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <div *ngFor="let carousel of result;let index = index">
       <h2 class="middle">{{'translatePicto.SearchResult' | translate}} : "{{this.wordsText[index].text}}"</h2>
       <carousel *ngIf="carousel[0] !=='https://lig-interaactionpicto.imag.fr/api/p/arasaac/10056'"  [cellsToScroll]="2" [loop]="true" [arrowsOutside]="true" arrowsTheme="dark">

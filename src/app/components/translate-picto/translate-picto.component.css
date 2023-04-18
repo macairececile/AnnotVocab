@@ -108,3 +108,8 @@ carousel{
   right: 0;
   position: absolute;
 }
+
+.loader {
+  width: 3cm;
+  height: 3cm;
+}
