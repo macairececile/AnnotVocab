@@ -63,9 +63,11 @@
   width: 40%;
 }
 carousel{
-  width : 50%;
+  width : 90%;
+  height: 300px !important;
   margin: auto;
 }
+
 .middle{
   text-align: center;
 }

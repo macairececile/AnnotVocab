@@ -32,10 +32,10 @@
                             <h2 class="middle">{{'translatePicto.SearchResult' | translate}} :
                                 "{{this.wordsText[index].text}}"</h2>
                             <carousel *ngIf="carousel[0] !=='https://lig-interaactionpicto.imag.fr/api/p/arasaac/10056'"
-                                      [cellsToScroll]="2" [loop]="true" [arrowsOutside]="true" arrowsTheme="dark">
-                                <div class="carousel-cell" *ngFor="let image of displayResult[index]">
+                                       [cellsToScroll]="2" [cellWidth]="300" [loop]="true" [arrowsOutside]="true" arrowsTheme="dark">
+                                <div id="{{indexCarousel}}" class="carousel-cell" *ngFor="let image of displayResult[index]; let indexCarousel = index">
                                     <img [ngClass]="{'borderColorGreen': this.editionService.imageSelected.indexOf(image) != -1}"
-                                         src="{{image}}" width="100%" height="100%" alt="image"
+                                         src="{{image}}" alt="image"
                                          (click)="select(image,index)">
                                 </div>
                             </carousel>
