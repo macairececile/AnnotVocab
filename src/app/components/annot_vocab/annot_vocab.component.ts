@@ -14,6 +14,8 @@ declare var getKeyPicto:any;
 declare var clearUrlImageJS:any;
 declare var setDataTS:any;
 declare var mkdirAnnotVocab:any;
+declare var getLemmaText:any;
+declare var lemmaText:any;
 
 export interface Sentences{
   sentence: string,
@@ -71,44 +73,66 @@ export class AnnotVocabComponent implements OnInit {
       this.resetRequest();
       this.wordSearch = this.getTextWhitoutChariot(formText.form.value.text);
       const numberOfWord = this.wordSearch.split(' ');
-      console.log(numberOfWord);
       this.editionService.wordsSearchTab = numberOfWord;
       if(numberOfWord.length > 50){
         this.openDialog();
         return;
       }
-      monitorInput(this.wordSearch, this.languageService.languageSearch);
-      setTimeout(()=> {
-        this.loading = false;
-        this.result = getUrlPicto();
-        this.editionService.result = this.result;
-        this.keyPicto = getKeyPicto();
-        for (let i=0; i<this.result.length; i = i+1){
-          this.result[i].forEach(value => {
-            const tabValue = value.split('/');
-            if(this.banksChecked.includes(tabValue[5])){
-              this.resultTab.push(value);
-            }
-          });
-          this.displayResult.push(this.resultTab);
-          this.resultTab = [];
+      let textLemma: string[] = [""];
+      lemmaText(this.wordSearch);
+      let lemmaTextInterval = setInterval(() => {
+        if (textLemma[0] == ""){
+          textLemma = getLemmaText();
+        }else {
+          clearInterval(lemmaTextInterval);
+          this.getPicto(numberOfWord, textLemma);
         }
-        this.wordsText = getTokensForTS();
-        this.editionService.wordsText = this.wordsText;
-        this.editionService.wordsTextSave = JSON.parse(JSON.stringify(this.wordsText));
-        this.editionService.isSearch = true;
-        if(this.dataRegisterChecked){
-          this.saveData.dataRegisterChecked = true;
-          this.saveData.addDataSearched(this.editionService.wordsText);
-        }else{
-          this.saveData.dataRegisterChecked = false;
-        }
-        numberOfWord.forEach(word => {
-          this.editionService.imageSelected.push('null');
-        });
-        this.duplicateCaseKey(this.keyPicto);
-      },numberOfWord.length * 2000);
+      }, 2000);
     }
+  }
+
+  getPicto(numberOfWord: string[], text: any){
+    monitorInput(this.convertTextToString(text), this.languageService.languageSearch);
+    setTimeout(()=> {
+      this.loading = false;
+      this.result = getUrlPicto();
+      this.editionService.result = this.result;
+      this.keyPicto = getKeyPicto();
+      for (let i=0; i<this.result.length; i = i+1){
+        this.result[i].forEach(value => {
+          const tabValue = value.split('/');
+          if(this.banksChecked.includes(tabValue[5])){
+            this.resultTab.push(value);
+          }
+        });
+        this.displayResult.push(this.resultTab);
+        this.resultTab = [];
+      }
+      this.wordsText = getTokensForTS();
+      this.editionService.wordsText = this.wordsText;
+      this.editionService.wordsTextSave = JSON.parse(JSON.stringify(this.wordsText));
+      this.editionService.isSearch = true;
+      if(this.dataRegisterChecked){
+        this.saveData.dataRegisterChecked = true;
+        this.saveData.addDataSearched(this.editionService.wordsText);
+      }else{
+        this.saveData.dataRegisterChecked = false;
+      }
+      numberOfWord.forEach(word => {
+        this.editionService.imageSelected.push('null');
+      });
+      this.duplicateCaseKey(this.keyPicto);
+    },numberOfWord.length * 3000);
+  }
+
+  convertTextToString(text: any){
+    text = text.replace("[", "");
+    text = text.replace("]", "");
+    text = text.replaceAll("'", "");
+    text = text.replace(',', "");
+    text = this.getTextWhitoutChariot(text);
+    console.log(text.split(" "));
+    return text;
   }
 
   getTextWhitoutChariot(text: string){

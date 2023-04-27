@@ -23,6 +23,7 @@ var urlImageJS = [];
 var keyImageJS = [];
 var tokensJS = [];
 var dataJS = "Salut";
+var dataLemma = [""];
 var requestAnnotVocab = [];
 var requestPostEdition = [];
 
@@ -92,27 +93,31 @@ function monitorInput(textInput, lang) {
   this.tokenize(textInput, lang, tokenized);
 }
 
+function lemmaInput(textInput){
+
+}
+
 // called on api response with tokenization results
 function tokenized(result) {
-  tokens = result.tokens;
-  // meaningsList.textContent = "";
-  let len = selectedMeanings.length;
-  selectedMeanings.length = tokens.length;
-  selectedMeanings.fill(0, len);
-  let lastStop = 0;
-  for (let t in tokens) {
-    let meaning = tokens[t];
-    let before = text.slice(lastStop, meaning.start);
-    let token = text.slice(meaning.start, meaning.stop);
-    tokens[t].text = token;
+    tokens = result.tokens;
+    // meaningsList.textContent = "";
+    let len = selectedMeanings.length;
+    selectedMeanings.length = tokens.length;
+    selectedMeanings.fill(0, len);
+    let lastStop = 0;
+    for (let t in tokens) {
+      let meaning = tokens[t];
+      let before = text.slice(lastStop, meaning.start);
+      let token = text.slice(meaning.start, meaning.stop);
+      tokens[t].text = token;
 
-    lastStop = meaning.stop;
-    if (selectedMeanings[t] >= meaning.synsets.length) {
-      selectedMeanings[t] = 0;
+      lastStop = meaning.stop;
+      if (selectedMeanings[t] >= meaning.synsets.length) {
+        selectedMeanings[t] = 0;
+      }
+      getTokens(tokens);
     }
-    getTokens(tokens);
-  }
-  refreshPictograms();
+    refreshPictograms();
 }
 
 // called when a meaning is selected, pictograms
@@ -240,12 +245,38 @@ function getPostEditionRequest(){
   return requestPostEdition;
 }
 
+function lemmaText(value){
+  textToLemma(value, setLemmaText);
+}
+
+function setLemmaText(value){
+  console.log('set lemma: ' + value);
+  dataLemma = value;
+}
+
+function getLemmaText(){
+  return dataLemma;
+}
+
 //request to the server at url
 function _phoneHome(path, callback, error) {
 
   if (error === undefined) error = callback;
   let xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
+  xhr.addEventListener('load', (e) => {
+    let xhr = e.target;
+    if (xhr.status == 200) callback(xhr.response);
+    else error(undefined, xhr.response);
+  });
+  xhr.open('GET', 'https://lig-interaactionpicto.imag.fr/api/' + path.join('/'));
+  xhr.send();
+}
+
+function _phoneHomeLemma(path, callback, error) {
+
+  if (error === undefined) error = callback;
+  let xhr = new XMLHttpRequest();
   xhr.addEventListener('load', (e) => {
     let xhr = e.target;
     if (xhr.status == 200) callback(xhr.response);
@@ -323,6 +354,11 @@ function removePostEditionRequest(nameRequest, callback, error){
 function getAllPostEditionRequest(callback, error) {
   let path = ['getAllPostEditionRequest'];
   this._phoneHomePostEdition(path, callback, error);
+}
+
+function textToLemma(text, callback, error){
+  let path = ['t2l', text];
+  this._phoneHomeLemma(path, callback, error);
 }
 
 // use the function pictogramsFormName from the file : startapi.js

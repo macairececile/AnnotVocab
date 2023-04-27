@@ -1,4 +1,5 @@
 var express = require('express');
+var {spawn} = require('child_process');
 var natural = require('natural');
 var fs = require('fs');
 var Dichotomous = require('./dicho').Dichotomous;
@@ -508,6 +509,7 @@ function sentenceToPictogram(toolbox,text, index){
 
 // this function search synsets in the toolbox from the text wrote by the user
 function sentenceToSynsets(toolbox, text) {
+
 	let tokenized = text.split(" ");
 	let tokens = [];
 	let definitions = {};
@@ -522,10 +524,10 @@ function sentenceToSynsets(toolbox, text) {
 		stop = start + token.length;
 		token = token.toLowerCase();
 		let synsets = toolbox.synsets.get(token);
-    if(synsets === undefined){
-      sentenceToPictogram(toolbox,token,index);
-      synsets = '';
-    }
+		if(synsets === undefined){
+			sentenceToPictogram(toolbox,token,index);
+			synsets = '';
+		}
 		tokens.push({ start, stop, synsets });
 		for (let s in synsets) {
 			let synset = synsets[s];
@@ -584,6 +586,27 @@ app.get('/mkdirPostEdition', (q, r) => {
 
 app.get('/mkdirAnnotVocab', (q, r) => {
 	r.send(mkdirAnnotVocab());
+});
+
+app.get('/t2l/:text', (q, r) => {
+	var dataLemma = "";
+	const pythonLemma = spawn('python3', ['./assets/lemma.py', q.params.text]);
+
+	pythonLemma.stdout.on('data', function (data) {
+		console.log('Pipe data from python script ...');
+		dataLemma = data.toString();
+	});
+
+	pythonLemma.stderr.on('data', (data) => {
+		console.error('stderr: ', data.toString());
+	})
+
+	// in close event we are sure that stream from child process is closed
+	pythonLemma.on('close', (code) => {
+		console.log('Close script python');
+		console.log('Word(s) lemma -> ' + dataLemma);
+		r.send(dataLemma);
+	});
 });
 
 function appGetToolbox(path, then) {
